@@ -87,6 +87,8 @@ const createTag = async (tag) => {
     const filesPaths = await glob(coursePath)
     const filesBlobs = await Promise.all(filesPaths.map(createBlobForFile(client, github)))
     const pathsForBlobs = filesPaths.map(fullPath => path.relative(coursePath, fullPath))
+    console.log(`before creating new tree ${JSON.stringify(currentCommit)}`);
+
     const newTree = await createNewTree(
       client, 
       github,
@@ -95,6 +97,7 @@ const createTag = async (tag) => {
       currentCommit.treeSha
     )
     const commitMessage = `New Version`
+    console.log(`before creating new commit ${JSON.stringify(newTree)}`);
     const newCommit = await createNewCommit(
       octo,
       org,
