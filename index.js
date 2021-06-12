@@ -2,6 +2,35 @@ const core = require('@actions/core');
 const github = require('@actions/github');
 const fs = require('fs');
 
+
+const createTag = async () => {
+    const client = github.getOctokit(core.getInput('token'))
+
+    const tag_rsp = await client.git.createTag({
+      ...github.context.repo,
+      tag,
+      message: `v${newVersion}`,
+      object: github.context.sha,
+      type: 'commit'
+    })
+    if (tag_rsp.status !== 201) {
+      core.setFailed(`Failed to create tag object (status=${tag_rsp.status})`)
+      return
+    }
+  
+    const ref_rsp = await client.git.createRef({
+      ...github.context.repo,
+      ref: `refs/tags/${tag}`,
+      sha: tag_rsp.data.sha
+    })
+    if (ref_rsp.status !== 201) {
+      core.setFailed(`Failed to create tag ref(status = ${tag_rsp.status})`)
+      return
+    }
+  
+    core.info(`Tagged ${tag_rsp.data.sha} as ${tag}`)
+}
+
 try {
   const packageRaw = fs.readFileSync('package.json');
   let packageInformation = JSON.parse(packageRaw);
@@ -13,32 +42,10 @@ try {
   // Get the JSON webhook payload for the event that triggered the workflow
   const payload = JSON.stringify(github.context.payload, undefined, 2)
   console.log(`The event payload: ${payload}`);
-
-  const client = github.getOctokit(core.getInput('token'))
-
-  const tag_rsp = await client.git.createTag({
-    ...github.context.repo,
-    tag,
-    message: `v${newVersion}`,
-    object: github.context.sha,
-    type: 'commit'
+  createTag().catch((error) => {
+    core.setFailed(error.message);
   })
-  if (tag_rsp.status !== 201) {
-    core.setFailed(`Failed to create tag object (status=${tag_rsp.status})`)
-    return
-  }
-
-  const ref_rsp = await client.git.createRef({
-    ...github.context.repo,
-    ref: `refs/tags/${tag}`,
-    sha: tag_rsp.data.sha
-  })
-  if (ref_rsp.status !== 201) {
-    core.setFailed(`Failed to create tag ref(status = ${tag_rsp.status})`)
-    return
-  }
-
-  core.info(`Tagged ${tag_rsp.data.sha} as ${tag}`)
+  
 } catch (error) {
   core.setFailed(error.message);
 }
