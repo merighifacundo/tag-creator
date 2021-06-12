@@ -3,14 +3,16 @@ const github = require('@actions/github');
 const fs = require('fs');
 
 
+
+
 const createTag = async (tag) => {
     const client = github.getOctokit(core.getInput('token'))
-
-
+    const currentCommit = await getCurrentCommit()
+    
     const commit_rsp = await client.rest.git.createCommit({
         ...github.context.repo,
         message: `New Version: ${tag}`,
-        tree: github.context.sha,
+        tree: github.context.ref,
         object: github.context.sha,
         type: 'commit'
     })
@@ -51,7 +53,7 @@ try {
   fs.writeFileSync('package.json',JSON.stringify(packageInformation, null, 4));
   core.setOutput("link", "http://google.com");
   // Get the JSON webhook payload for the event that triggered the workflow
-  const payload = JSON.stringify(github.context.payload, undefined, 2)
+  const payload = JSON.stringify(github.context, undefined, 2)
   console.log(`The event payload: ${payload}`);
   createTag(newVersion).catch((error) => {
     core.setFailed(error.message);
