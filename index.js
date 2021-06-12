@@ -6,11 +6,13 @@ const getCurrentCommit = async (
   client,
   github
 ) => {
-  console.log(`Getting current commit`);
-  const { data: refData } = await client.rest.git.getRef({
+  const getRefParam = {
     ...github.context.repo,
-    ref: github.context.ref,
-  })
+    ref: github.context.ref.replace('refs/',''),
+  };
+  console.log(`Getting current commit ${JSON.stringify(getRefParam)}`);
+  
+  const { data: refData } = await client.rest.git.getRef(getRefParam)
   console.log(`data: ${refData}`);
   const commitSha = refData.object.sha
   const { data: commitData } = await client.rest.git.getCommit({
