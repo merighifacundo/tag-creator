@@ -6,7 +6,7 @@ const fs = require('fs');
 const createTag = async () => {
     const client = github.getOctokit(core.getInput('token'))
 
-    const tag_rsp = await client.git.createTag({
+    const tag_rsp = await client.rest.git.createTag({
       ...github.context.repo,
       tag,
       message: `v${newVersion}`,
@@ -18,7 +18,7 @@ const createTag = async () => {
       return
     }
   
-    const ref_rsp = await client.git.createRef({
+    const ref_rsp = await client.rest.git.createRef({
       ...github.context.repo,
       ref: `refs/tags/${tag}`,
       sha: tag_rsp.data.sha

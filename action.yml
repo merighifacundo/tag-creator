@@ -5,6 +5,10 @@ inputs:
     description: 'This is the new version if non is added we will bump the last one.'
     required: false
     default: null
+  token:
+    description: 'Git hub token to be use for authentication.'
+    required: false
+    default: null
 outputs:
   link:
     description: 'The link to the new version'
