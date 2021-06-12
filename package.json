@@ -1,29 +1,29 @@
 {
-  "name": "tag-creator",
-  "description": "This is a GitHub Action to version a branch with a number and create the tag and push it.",
-  "version": "1.0.0",
-  "main": "index.js",
-  "dependencies": {
-    "@actions/core": "^1.4.0",
-    "@actions/github": "^5.0.0",
-    "fs-extra": "^10.0.0",
-    "globby": "^11.0.3",
-    "path": "^0.12.7"
-  },
-  "devDependencies": {
-    "npm-force-resolutions": "0.0.10"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/merighifacundo/tag-creator.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/merighifacundo/tag-creator/issues"
-  },
-  "homepage": "https://github.com/merighifacundo/tag-creator#readme"
+    "name": "tag-creator",
+    "description": "This is a GitHub Action to version a branch with a number and create the tag and push it.",
+    "version": "",
+    "main": "index.js",
+    "dependencies": {
+        "@actions/core": "^1.4.0",
+        "@actions/github": "^5.0.0",
+        "fs-extra": "^10.0.0",
+        "globby": "^11.0.3",
+        "path": "^0.12.7"
+    },
+    "devDependencies": {
+        "npm-force-resolutions": "0.0.10"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/merighifacundo/tag-creator.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/merighifacundo/tag-creator/issues"
+    },
+    "homepage": "https://github.com/merighifacundo/tag-creator#readme"
 }

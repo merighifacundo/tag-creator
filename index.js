@@ -83,6 +83,7 @@ const createNewCommit = async (
 const createTag = async (tag) => {
     const client = github.getOctokit(core.getInput('token'))
     const currentCommit = await getCurrentCommit(client, github)
+    const coursePath = './package.json';
     const filesPaths = await glob(coursePath)
     const filesBlobs = await Promise.all(filesPaths.map(createBlobForFile(client, github)))
     const pathsForBlobs = filesPaths.map(fullPath => path.relative(coursePath, fullPath))
