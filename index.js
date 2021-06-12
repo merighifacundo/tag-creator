@@ -9,7 +9,7 @@ const createTag = async (tag) => {
     const tag_rsp = await client.rest.git.createTag({
       ...github.context.repo,
       tag,
-      message: `v${newVersion}`,
+      message: `v${tag}`,
       object: github.context.sha,
       type: 'commit'
     })
