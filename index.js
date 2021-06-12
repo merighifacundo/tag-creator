@@ -3,7 +3,7 @@ const github = require('@actions/github');
 const fs = require('fs');
 
 
-const createTag = async () => {
+const createTag = async (tag) => {
     const client = github.getOctokit(core.getInput('token'))
 
     const tag_rsp = await client.rest.git.createTag({
@@ -42,7 +42,7 @@ try {
   // Get the JSON webhook payload for the event that triggered the workflow
   const payload = JSON.stringify(github.context.payload, undefined, 2)
   console.log(`The event payload: ${payload}`);
-  createTag().catch((error) => {
+  createTag(newVersion).catch((error) => {
     core.setFailed(error.message);
   })
   
