@@ -57,6 +57,7 @@ const createNewTree = async (
     type: `blob`,
     sha,
   }))
+  console.log(`tree: ${JSON.stringify(tree)}`);
   const { data } = await client.rest.git.createTree({
     ...github.context.repo,
     tree,
@@ -83,11 +84,9 @@ const createNewCommit = async (
 const createTag = async (tag) => {
     const client = github.getOctokit(core.getInput('token'))
     const currentCommit = await getCurrentCommit(client, github)
-    const coursePath = './package.json';
-    const filesPaths = await glob(coursePath)
-    const filesBlobs = await Promise.all(filesPaths.map(createBlobForFile(client, github)))
+    const filesBlobs = await Promise.all(['package.json'].map(createBlobForFile(client, github)))
     const pathsForBlobs = filesPaths.map(fullPath => path.relative(coursePath, fullPath))
-    console.log(`before creating new tree ${JSON.stringify(currentCommit)}`);
+    console.log(`before creating new tree ${JSON.stringify(currentCommit)} and ${pathsForBlobs}`);
 
     const newTree = await createNewTree(
       client, 
