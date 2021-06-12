@@ -1,6 +1,9 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
 const fs = require('fs');
+const glob = require('globby');
+const path = require('path');
+const { readFile } = require('fs-extra');
 
 const getCurrentCommit = async (
   client,
