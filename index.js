@@ -5,7 +5,7 @@ const fs = require('fs');
 try {
   const packageRaw = fs.readFileSync('package.json');
   let packageInformation = JSON.parse(packageRaw);
-  console.log(`The package Information: ${packageInformation}`);
+  console.log(`The package Information: ${packageInformation.version} and name: ${packageInformation.name}`);
   const newVersion = core.getInput('new-version');
   console.log(`New version to get updated ${newVersion}!`);
   
