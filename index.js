@@ -7,12 +7,15 @@ const fs = require('fs');
 
 const createTag = async (tag) => {
     const client = github.getOctokit(core.getInput('token'))
-    const currentCommit = await getCurrentCommit()
-    
+    const tree_rsp = await client.rest.git.createTree({
+        ...github.context.repo,
+        tree: github.context.sha
+    });
+    console.log(JSON.stringify(tree_rsp))
     const commit_rsp = await client.rest.git.createCommit({
         ...github.context.repo,
         message: `New Version: ${tag}`,
-        tree: github.context.ref,
+        tree: tree_rsp.sha,
         object: github.context.sha,
         type: 'commit'
     })
