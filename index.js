@@ -6,11 +6,21 @@ const fs = require('fs');
 const createTag = async (tag) => {
     const client = github.getOctokit(core.getInput('token'))
 
+
+    const commit_rsp = await client.rest.git.createCommit({
+        ...github.context.repo,
+        message: `New Version: ${tag}`,
+        tree: github.context.sha,
+        object: github.context.sha,
+        type: 'commit'
+    })
+    console.log(JSON.stringify(commit_rsp))
+
     const tag_rsp = await client.rest.git.createTag({
       ...github.context.repo,
       tag,
       message: `v${tag}`,
-      object: github.context.sha,
+      object: commit_rsp.sha,
       type: 'commit'
     })
     if (tag_rsp.status !== 201) {
@@ -37,7 +47,8 @@ try {
   console.log(`The package Information: ${packageInformation.version} and name: ${packageInformation.name}`);
   const newVersion = core.getInput('new-version');
   console.log(`New version to get updated ${newVersion}!`);
-  
+  packageInformation.version = newVersion;
+  fs.writeFileSync('package.json',JSON.stringify(packageInformation, null, 4));
   core.setOutput("link", "http://google.com");
   // Get the JSON webhook payload for the event that triggered the workflow
   const payload = JSON.stringify(github.context.payload, undefined, 2)
