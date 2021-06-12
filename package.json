@@ -1,5 +1,4 @@
 {
-
   "name": "tag-creator",
   "description": "This is a GitHub Action to version a branch with a number and create the tag and push it.",
   "version": "1.0.0",
