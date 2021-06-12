@@ -22,8 +22,5 @@
   "bugs": {
     "url": "https://github.com/merighifacundo/tag-creator/issues"
   },
-  "resolutions": {
-    "is-plain-object": "4.0.0"
-  },
   "homepage": "https://github.com/merighifacundo/tag-creator#readme"
 }

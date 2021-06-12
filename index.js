@@ -1,8 +1,11 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
+const fs = require('fs');
 
 try {
-  
+  const packageRaw = fs.readFileSync('package.json');
+  let packageInformation = JSON.parse(packageRaw);
+  console.log(`The package Information: ${packageInformation}`);
   const newVersion = core.getInput('new-version');
   console.log(`New version to get updated ${newVersion}!`);
   
