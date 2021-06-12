@@ -2,30 +2,108 @@ const core = require('@actions/core');
 const github = require('@actions/github');
 const fs = require('fs');
 
+const getCurrentCommit = async (
+  client,
+  github
+) => {
+  const { data: refData } = await client.rest.git.getRef({
+    ...github.context.repo,
+    ref: github.context.ref,
+  })
+  const commitSha = refData.object.sha
+  const { data: commitData } = await client.rest.git.getCommit({
+    ...github.context.repo,
+    commit_sha: commitSha,
+  })
+  return {
+    commitSha,
+    treeSha: commitData.tree.sha,
+  }
+}
 
+
+const getFileAsUTF8 = (filePath) => readFile(filePath, 'utf8')
+
+const createBlobForFile = (client, github) => async (
+  filePath
+) => {
+  const content = await getFileAsUTF8(filePath)
+  const blobData = await client.rest.git.createBlob({
+    ...github.context.repo,
+    content,
+    encoding: 'utf-8',
+  })
+  return blobData.data
+}
+
+const createNewTree = async (
+  client, 
+  github,
+  blobs,
+  paths,
+  parentTreeSha
+) => {
+  // My custom config. Could be taken as parameters
+  const tree = blobs.map(({ sha }, index) => ({
+    path: paths[index],
+    mode: `100644`,
+    type: `blob`,
+    sha,
+  }))
+  const { data } = await client.rest.git.createTree({
+    ...github.context.repo,
+    tree,
+    base_tree: parentTreeSha,
+  })
+  return data
+}
+
+const createNewCommit = async (
+  client,
+  github,
+  message,
+  currentTreeSha,
+  currentCommitSha
+) =>
+  (await client.rest.git.createCommit({
+    ...github.context.repo,
+    message,
+    tree: currentTreeSha,
+    parents: [currentCommitSha],
+  })).data
 
 
 const createTag = async (tag) => {
     const client = github.getOctokit(core.getInput('token'))
-    const tree_rsp = await client.rest.git.createTree({
-        ...github.context.repo,
-        tree: github.context.sha
-    });
-    console.log(JSON.stringify(tree_rsp))
-    const commit_rsp = await client.rest.git.createCommit({
-        ...github.context.repo,
-        message: `New Version: ${tag}`,
-        tree: tree_rsp.sha,
-        object: github.context.sha,
-        type: 'commit'
-    })
-    console.log(JSON.stringify(commit_rsp))
+    const currentCommit = await getCurrentCommit(client, github)
+    const filesPaths = await glob(coursePath)
+    const filesBlobs = await Promise.all(filesPaths.map(createBlobForFile(client, github)))
+    const pathsForBlobs = filesPaths.map(fullPath => path.relative(coursePath, fullPath))
+    const newTree = await createNewTree(
+      client, 
+      github,
+      filesBlobs,
+      pathsForBlobs,
+      currentCommit.treeSha
+    )
+    const commitMessage = `New Version`
+    const newCommit = await createNewCommit(
+      octo,
+      org,
+      repo,
+      commitMessage,
+      newTree.sha,
+      currentCommit.commitSha
+    )
+
+
+    
 
     const tag_rsp = await client.rest.git.createTag({
       ...github.context.repo,
       tag,
       message: `v${tag}`,
-      object: commit_rsp.sha,
+      object: newCommit.sha,
       type: 'commit'
     })
     if (tag_rsp.status !== 201) {
