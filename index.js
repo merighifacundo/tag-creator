@@ -134,7 +134,7 @@ const createTag = async (tag) => {
     core.info(`Tagged ${tag_rsp.data.sha} as ${tag}`)
 
 
-    const ref_rsp = await client.rest.git.createRef({
+    const ref_branch_rsp = await client.rest.git.createRef({
       ...github.context.repo,
       ref: `refs/heads/release-v${tag}`,
       sha: newCommit.sha
@@ -143,8 +143,10 @@ const createTag = async (tag) => {
       core.setFailed(`Failed to create tag ref(status = ${tag_rsp.status})`)
       return
     }
+
+    core.info(`Tagged ${ref_branch_rsp.data.sha} as ${tag}`)
   
-    core.info(`Tagged ${tag_rsp.data.sha} as ${tag}`)
+    
 }
 
 try {
