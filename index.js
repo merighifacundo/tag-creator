@@ -84,7 +84,8 @@ const createNewCommit = async (
 const createTag = async (tag) => {
     const client = github.getOctokit(core.getInput('token'))
     const currentCommit = await getCurrentCommit(client, github)
-    const filesBlobs = await Promise.all(['package.json'].map(createBlobForFile(client, github)))
+    const filesPaths = ['package.json'];
+    const filesBlobs = await Promise.all(filesPaths.map(createBlobForFile(client, github)))
     const pathsForBlobs = filesPaths.map(fullPath => path.relative(coursePath, fullPath))
     console.log(`before creating new tree ${JSON.stringify(currentCommit)} and ${pathsForBlobs}`);
 
