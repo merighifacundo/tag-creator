@@ -99,9 +99,8 @@ const createTag = async (tag) => {
     const commitMessage = `New Version`
     console.log(`before creating new commit ${JSON.stringify(newTree)}`);
     const newCommit = await createNewCommit(
-      octo,
-      org,
-      repo,
+      client, 
+      github,
       commitMessage,
       newTree.sha,
       currentCommit.commitSha
