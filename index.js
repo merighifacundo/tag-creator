@@ -5,6 +5,8 @@ const glob = require('globby');
 const path = require('path');
 const { readFile } = require('fs-extra');
 
+const semver = require('semver')
+
 const getCurrentCommit = async (
   client,
   github
@@ -159,7 +161,18 @@ try {
   const packageRaw = fs.readFileSync('package.json');
   let packageInformation = JSON.parse(packageRaw);
   console.log(`The package Information: ${packageInformation.version} and name: ${packageInformation.name}`);
-  const newVersion = core.getInput('new-version');
+  let newVersion = core.getInput('new-version');
+  // releasebump
+  const releaseBumps = ['major', 'premajor', 'minor', 'preminor', 'patch', 'prepatch', 'prerelease'];
+  if (releaseBumps.includes(newVersion)) {
+    newVersion = semver.inc(packageInformation.version, newVersion);
+  }
+  if (semver.valid(newVersion) === null) {
+    core.setFailed("Invalid Version");
+    return ;
+  }
+
+
   console.log(`New version to get updated ${newVersion}!`);
   packageInformation.version = newVersion;
   fs.writeFileSync('package.json',JSON.stringify(packageInformation, null, 4));
