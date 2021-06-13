@@ -86,7 +86,7 @@ const createTag = async (tag) => {
     const currentCommit = await getCurrentCommit(client, github)
     const filesPaths = ['package.json'];
     const filesBlobs = await Promise.all(filesPaths.map(createBlobForFile(client, github)))
-    const pathsForBlobs = filesPaths.map(fullPath => path.relative(coursePath, fullPath))
+    const pathsForBlobs = filesPaths.map(fullPath => path.relative('./', fullPath))
     console.log(`before creating new tree ${JSON.stringify(currentCommit)} and ${pathsForBlobs}`);
 
     const newTree = await createNewTree(
