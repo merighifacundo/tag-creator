@@ -149,7 +149,7 @@ const createTag = async (tag) => {
     core.info(`Tagged ${tag_rsp.data.sha} as ${tag}`)
     const resultOfComparation = await client.rest.repos.compareCommitsWithBasehead({
       ...github.context.repo,
-      basehead: `master..release-v${tag}`
+      basehead: `master...release-v${tag}`
     })
     console.log(`result: ${JSON.stringify(resultOfComparation)}`);
     core.info(`Tagged ${ref_branch_rsp.data.sha} as ${tag}`)
@@ -185,5 +185,6 @@ try {
   })
   
 } catch (error) {
+  console.log(JSON.stringify(error));
   core.setFailed(error.message);
 }
