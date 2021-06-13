@@ -151,7 +151,7 @@ const createTag = async (tag) => {
       ...github.context.repo,
       basehead: `master...release-v${tag}`
     })
-    console.log(`result: ${JSON.stringify(resultOfComparation)}`);
+    console.log(`result: ${JSON.stringify(resultOfComparation.data)}`);
     core.info(`Tagged ${ref_branch_rsp.data.sha} as ${tag}`)
   
     
