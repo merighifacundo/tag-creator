@@ -131,8 +131,7 @@ const createTag = async (tag) => {
       return
     }
   
-    core.info(`Tagged ${tag_rsp.data.sha} as ${tag}`)
-
+    
 
     const ref_branch_rsp = await client.rest.git.createRef({
       ...github.context.repo,
@@ -144,6 +143,13 @@ const createTag = async (tag) => {
       return
     }
 
+
+    core.info(`Tagged ${tag_rsp.data.sha} as ${tag}`)
+    const resultOfComparation = await client.rest.repos.compareCommitsWithBasehead({
+      ...github.context.repo,
+      basehead: `master..release-v${tag}`
+    })
+    console.log(`result: ${JSON.stringify(resultOfComparation)}`);
     core.info(`Tagged ${ref_branch_rsp.data.sha} as ${tag}`)
   
     
