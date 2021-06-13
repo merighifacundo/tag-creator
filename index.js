@@ -111,7 +111,7 @@ const createTag = async (tag) => {
 
     const tag_rsp = await client.rest.git.createTag({
       ...github.context.repo,
-      tag,
+      tag: `v${tag}`,
       message: `v${tag}`,
       object: newCommit.sha,
       type: 'commit'
@@ -123,7 +123,20 @@ const createTag = async (tag) => {
   
     const ref_rsp = await client.rest.git.createRef({
       ...github.context.repo,
-      ref: `refs/tags/${tag}`,
+      ref: `refs/tags/v${tag}`,
+      sha: newCommit.sha
+    })
+    if (ref_rsp.status !== 201) {
+      core.setFailed(`Failed to create tag ref(status = ${tag_rsp.status})`)
+      return
+    }
+  
+    core.info(`Tagged ${tag_rsp.data.sha} as ${tag}`)
+
+
+    const ref_rsp = await client.rest.git.createRef({
+      ...github.context.repo,
+      ref: `refs/heads/release-v${tag}`,
       sha: newCommit.sha
     })
     if (ref_rsp.status !== 201) {
