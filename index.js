@@ -151,7 +151,12 @@ const createTag = async (tag) => {
       ...github.context.repo,
       basehead: `master...release-v${tag}`
     })
-    console.log(`result: ${JSON.stringify(resultOfComparation.data)}`);
+    //console.log(`result: ${JSON.stringify(resultOfComparation.data.commits)}`);
+    let message = "The commit list: \n";
+    resultOfComparation.data.commits.forEach(theCommit => {
+      message += theCommit.commit.sha + ':' + theCommit.commit.message + "\n";
+    })
+    console.log(message);
     core.info(`Tagged ${ref_branch_rsp.data.sha} as ${tag}`)
   
     
