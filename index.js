@@ -124,7 +124,7 @@ const createTag = async (tag) => {
     const ref_rsp = await client.rest.git.createRef({
       ...github.context.repo,
       ref: `refs/tags/${tag}`,
-      sha: tag_rsp.data.sha
+      sha: newCommit.sha
     })
     if (ref_rsp.status !== 201) {
       core.setFailed(`Failed to create tag ref(status = ${tag_rsp.status})`)
